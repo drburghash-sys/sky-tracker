@@ -1,1 +1,143 @@
-PLACEHOLDER
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="تتبع القمر والكواكب: الشروق والغروب والاتجاه وأفضل أوقات الرصد.">
+  <title>مرصد السماء</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="hero">
+      <div class="brand-wrap">
+        <img class="app-logo" src="icon.svg" alt="أيقونة مرصد السماء">
+        <div>
+          <p class="eyebrow">SKY TRACKER</p>
+          <h1>مرصد السماء</h1>
+          <p class="subtitle">أين ترى القمر والكواكب؟ متى تشرق وتغرب؟ وما أفضل ليالي الرصد هذا الأسبوع والشهر؟</p>
+        </div>
+      </div>
+      <div class="location-box">
+        <div>
+          <span class="muted">الموقع الحالي</span>
+          <strong id="locationName">تبوك</strong>
+          <small id="locationCoords">28.384°N · 36.566°E</small>
+        </div>
+        <button id="useLocationBtn" class="secondary-btn" type="button">استخدم موقعي</button>
+      </div>
+    </header>
+
+    <section class="controls panel">
+      <label>
+        <span>المدينة</span>
+        <select id="citySelect">
+          <option value="tabuk">تبوك</option>
+          <option value="riyadh">الرياض</option>
+          <option value="jeddah">جدة</option>
+          <option value="makkah">مكة</option>
+          <option value="madinah">المدينة المنورة</option>
+          <option value="dammam">الدمام</option>
+        </select>
+      </label>
+      <label>
+        <span>التاريخ</span>
+        <input id="dateInput" type="date">
+      </label>
+      <label>
+        <span>وقت المشاهدة <b id="timeLabel">—</b></span>
+        <input id="timeInput" type="range" min="0" max="23.5" step="0.5">
+      </label>
+    </section>
+
+    <section class="body-picker panel" aria-label="اختيار الجرم السماوي">
+      <button class="body-chip active" data-body="Moon" type="button"><span>🌙</span>القمر</button>
+      <button class="body-chip" data-body="Mercury" type="button"><span>☿</span>عطارد</button>
+      <button class="body-chip" data-body="Venus" type="button"><span>♀</span>الزهرة</button>
+      <button class="body-chip" data-body="Mars" type="button"><span>♂</span>المريخ</button>
+      <button class="body-chip" data-body="Jupiter" type="button"><span>♃</span>المشتري</button>
+      <button class="body-chip" data-body="Saturn" type="button"><span>♄</span>زحل</button>
+    </section>
+
+    <section id="loadingPanel" class="panel loading">جاري تحميل محرك الحساب الفلكي…</section>
+
+    <div id="appContent" hidden>
+      <nav class="tabs panel" aria-label="فترة العرض">
+        <button class="tab active" data-tab="today" type="button">اليوم</button>
+        <button class="tab" data-tab="week" type="button">هذا الأسبوع</button>
+        <button class="tab" data-tab="month" type="button">هذا الشهر</button>
+      </nav>
+
+      <section id="todayTab" class="tab-page active-page">
+        <div class="today-grid">
+          <article class="panel sky-card">
+            <div class="section-title-row">
+              <div>
+                <span class="muted">مكانه الآن</span>
+                <h2 id="currentBodyTitle">القمر</h2>
+              </div>
+              <div id="visibilityBadge" class="badge">—</div>
+            </div>
+
+            <div class="compass" aria-label="بوصلة توضح اتجاه الجرم">
+              <span class="north">ش</span><span class="east">ق</span><span class="south">ج</span><span class="west">غ</span>
+              <div class="ring ring-1"></div><div class="ring ring-2"></div>
+              <div id="azLine" class="az-line"></div>
+              <div id="bodyDot" class="body-dot"></div>
+              <div class="center-dot"></div>
+            </div>
+
+            <div class="position-readout">
+              <strong id="directionNow">—</strong>
+              <span id="altitudeNow">—</span>
+              <small id="visibilityReason">—</small>
+            </div>
+          </article>
+
+          <div class="metrics-grid">
+            <article class="metric panel"><span>الشروق</span><strong id="riseTime">—</strong><small id="riseDir">—</small></article>
+            <article class="metric panel"><span>الغروب</span><strong id="setTime">—</strong><small id="setDir">—</small></article>
+            <article class="metric panel"><span>أعلى ارتفاع</span><strong id="maxAlt">—</strong><small id="maxTime">—</small></article>
+            <article class="metric panel"><span>أفضل وقت للرصد</span><strong id="bestTime">—</strong><small id="bestDir">—</small></article>
+          </div>
+        </div>
+
+        <article id="moonInfo" class="panel moon-info" hidden>
+          <div><span class="muted">طور القمر</span><strong id="moonPhase">—</strong></div>
+          <div><span class="muted">الإضاءة</span><strong id="moonIllumination">—</strong></div>
+        </article>
+      </section>
+
+      <section id="weekTab" class="tab-page">
+        <article class="panel summary-card">
+          <div><span class="muted">ليالٍ مناسبة فلكيًا خلال 7 أيام</span><strong id="weekCount">—</strong></div>
+          <div class="progress"><span id="weekProgress"></span></div>
+        </article>
+        <div id="weekList" class="forecast-list"></div>
+      </section>
+
+      <section id="monthTab" class="tab-page">
+        <article class="panel summary-card">
+          <div><span class="muted">ليالٍ مناسبة فلكيًا خلال 30 يومًا</span><strong id="monthCount">—</strong></div>
+          <div class="progress"><span id="monthProgress"></span></div>
+        </article>
+        <div id="monthGrid" class="month-grid"></div>
+      </section>
+
+      <section class="panel note-card">
+        <strong>كيف نحسب «يمكن رؤيته»؟</strong>
+        <p>هذه النسخة تحسب الملاءمة الفلكية: يكون الجرم أعلى من 10° والسماء في شفق مدني أو أظلم (الشمس أسفل −6°). السحب والغبار والتلوث الضوئي غير محسوبة بعد، لذلك لا تُعد النتيجة ضمانًا للرؤية بالعين.</p>
+      </section>
+    </div>
+
+    <footer>حسابات فلكية محلية على جهازك · لا حاجة إلى تسجيل دخول</footer>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
