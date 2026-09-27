@@ -1,0 +1,15 @@
+{
+  "name": "مرصد السماء - Sky Tracker",
+  "short_name": "مرصد السماء",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06101d",
+  "theme_color": "#07111f",
+  "description": "تتبع القمر والكواكب وأوقات الشروق والغروب وأفضل أوقات الرصد.",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
