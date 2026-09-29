@@ -20,7 +20,7 @@
         <div>
           <p class="eyebrow">SKY TRACKER</p>
           <h1>مرصد السماء</h1>
-          <p class="subtitle">أين ترى القمر والكواكب؟ متى تشرق وتغرب؟ وما أفضل ليالي الرصد هذا الأسبوع والشهر؟</p>
+          <p class="subtitle">شاهد مكان القمر والكواكب على الأفق الحقيقي، ومتى تشرق وتغرب، وأفضل أوقات الرصد.</p>
         </div>
       </div>
       <div class="location-box">
@@ -74,28 +74,62 @@
       </nav>
 
       <section id="todayTab" class="tab-page active-page">
-        <div class="today-grid">
-          <article class="panel sky-card">
-            <div class="section-title-row">
-              <div>
-                <span class="muted">مكانه الآن</span>
-                <h2 id="currentBodyTitle">القمر</h2>
-              </div>
-              <div id="visibilityBadge" class="badge">—</div>
+        <article class="panel horizon-card">
+          <div class="section-title-row horizon-head">
+            <div>
+              <span class="muted">منظر السماء الآن</span>
+              <h2 id="currentBodyTitle">القمر</h2>
             </div>
+            <div id="visibilityBadge" class="badge">—</div>
+          </div>
 
+          <div id="skyScroll" class="sky-scroll" aria-label="منظر أفقي لمواقع القمر والكواكب">
+            <div id="skyPanorama" class="sky-panorama">
+              <div class="sky-starfield" aria-hidden="true"></div>
+              <div class="alt-guide g60"><span>60°</span></div>
+              <div class="alt-guide g30"><span>30°</span></div>
+              <div class="alt-guide g0"><span>الأفق 0°</span></div>
+              <div id="skyObjects" class="sky-objects"></div>
+              <div id="belowHorizonBanner" class="below-horizon" hidden></div>
+              <div class="mountains back" aria-hidden="true"></div>
+              <div class="mountains front" aria-hidden="true"></div>
+              <div class="ground" aria-hidden="true"></div>
+
+              <div class="dir-mark d0"><b>شمال</b><span>0°</span></div>
+              <div class="dir-mark d45"><b>شمال شرقي</b><span>45°</span></div>
+              <div class="dir-mark d90"><b>شرق</b><span>90°</span></div>
+              <div class="dir-mark d135"><b>جنوب شرقي</b><span>135°</span></div>
+              <div class="dir-mark d180"><b>جنوب</b><span>180°</span></div>
+              <div class="dir-mark d225"><b>جنوب غربي</b><span>225°</span></div>
+              <div class="dir-mark d270"><b>غرب</b><span>270°</span></div>
+              <div class="dir-mark d315"><b>شمال غربي</b><span>315°</span></div>
+              <div class="dir-mark d360"><b>شمال</b><span>360°</span></div>
+            </div>
+          </div>
+
+          <div class="sky-scene-footer">
+            <div>
+              <strong id="directionNow">—</strong>
+              <span id="altitudeNow">—</span>
+            </div>
+            <small id="visibilityReason">—</small>
+          </div>
+        </article>
+
+        <div class="today-grid lower-grid">
+          <article class="panel compass-card">
+            <div class="section-title-row compact-head">
+              <div>
+                <span class="muted">البوصلة</span>
+                <strong>الموقع الدقيق</strong>
+              </div>
+            </div>
             <div class="compass" aria-label="بوصلة توضح اتجاه الجرم">
-              <span class="north">ش</span><span class="east">ق</span><span class="south">ج</span><span class="west">غ</span>
+              <span class="north">شمال</span><span class="east">شرق</span><span class="south">جنوب</span><span class="west">غرب</span>
               <div class="ring ring-1"></div><div class="ring ring-2"></div>
               <div id="azLine" class="az-line"></div>
               <div id="bodyDot" class="body-dot"></div>
               <div class="center-dot"></div>
-            </div>
-
-            <div class="position-readout">
-              <strong id="directionNow">—</strong>
-              <span id="altitudeNow">—</span>
-              <small id="visibilityReason">—</small>
             </div>
           </article>
 
@@ -130,8 +164,8 @@
       </section>
 
       <section class="panel note-card">
-        <strong>كيف نحسب «يمكن رؤيته»؟</strong>
-        <p>هذه النسخة تحسب الملاءمة الفلكية: يكون الجرم أعلى من 10° والسماء في شفق مدني أو أظلم (الشمس أسفل −6°). السحب والغبار والتلوث الضوئي غير محسوبة بعد، لذلك لا تُعد النتيجة ضمانًا للرؤية بالعين.</p>
+        <strong>مهم لفهم المنظر</strong>
+        <p>الأجرام التي تكون تحت خط الأفق لا تظهر داخل السماء، ويظهر بدلًا منها تنبيه واضح. موضع كل جرم مرسوم من السمت (0–360°) والارتفاع فوق الأفق، لذلك شرق وغرب في هذا المنظر ليستا تقديرًا بصريًا بل نتيجة الحساب الفلكي لنفس الوقت والموقع.</p>
       </section>
     </div>
 
