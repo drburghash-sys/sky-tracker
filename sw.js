@@ -1,4 +1,4 @@
-const CACHE = 'sky-tracker-v1';
+const CACHE = 'sky-tracker-v2';
 const ASSETS = ['./','./index.html','./style.css','./app.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
