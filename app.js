@@ -13,6 +13,7 @@ const CITIES = {
 const BODY_LABELS = {
   Moon: 'القمر', Mercury: 'عطارد', Venus: 'الزهرة', Mars: 'المريخ', Jupiter: 'المشتري', Saturn: 'زحل'
 };
+const SCENE_BODIES = ['Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
 
 let Astro;
 let selectedBody = 'Moon';
@@ -146,6 +147,84 @@ function setCompass(hor) {
   $('#bodyDot').style.top = `${y}%`;
   $('#azLine').style.transform = `rotate(${hor.azimuth-90}deg)`;
 }
+function skyClass(body) {
+  return body.toLowerCase();
+}
+function setSkyTheme(sunAltitude) {
+  const p = $('#skyPanorama');
+  if (sunAltitude > 0) {
+    p.style.setProperty('--sky-top','#4c8fd0');
+    p.style.setProperty('--sky-mid','#79aede');
+    p.style.setProperty('--sky-horizon','#f4bd86');
+    p.style.setProperty('--stars-opacity','.05');
+  } else if (sunAltitude > -6) {
+    p.style.setProperty('--sky-top','#16365f');
+    p.style.setProperty('--sky-mid','#6c6186');
+    p.style.setProperty('--sky-horizon','#e18c68');
+    p.style.setProperty('--stars-opacity','.28');
+  } else if (sunAltitude > -12) {
+    p.style.setProperty('--sky-top','#0a1b38');
+    p.style.setProperty('--sky-mid','#243559');
+    p.style.setProperty('--sky-horizon','#65516e');
+    p.style.setProperty('--stars-opacity','.62');
+  } else {
+    p.style.setProperty('--sky-top','#050d20');
+    p.style.setProperty('--sky-mid','#0a1832');
+    p.style.setProperty('--sky-horizon','#29334c');
+    p.style.setProperty('--stars-opacity','.92');
+  }
+}
+function renderSkyScene(date, observer, selectedVis) {
+  const wrap = $('#skyObjects');
+  wrap.replaceChildren();
+
+  const sunHor = horizon(Astro.Body.Sun, date, observer);
+  setSkyTheme(sunHor.altitude);
+
+  const positions = {};
+  for (const name of SCENE_BODIES) {
+    const hor = horizon(Astro.Body[name], date, observer);
+    positions[name] = hor;
+    if (hor.altitude <= 0) continue;
+
+    const el = document.createElement('div');
+    el.className = `sky-object ${skyClass(name)}${name === selectedBody ? ' selected' : ''}`;
+    const x = ((hor.azimuth % 360) + 360) % 360 / 360 * 100;
+    const y = 81 - Math.min(90, Math.max(0, hor.altitude)) * (72 / 90);
+    el.style.left = `${x}%`;
+    el.style.top = `${y}%`;
+
+    const orb = document.createElement('div');
+    orb.className = 'orb';
+    const label = document.createElement('div');
+    label.className = 'obj-name';
+    label.textContent = BODY_LABELS[name];
+    const data = document.createElement('div');
+    data.className = 'obj-data';
+    data.textContent = `${dirName(hor.azimuth)} · ${arabicNumber.format(Math.round(hor.azimuth))}° · ارتفاع ${arabicNumber.format(Math.round(hor.altitude))}°`;
+    el.append(orb,label,data);
+    wrap.append(el);
+  }
+
+  const banner = $('#belowHorizonBanner');
+  const selectedHor = positions[selectedBody] || selectedVis.hor;
+  if (selectedHor.altitude <= 0) {
+    banner.hidden = false;
+    banner.textContent = `${BODY_LABELS[selectedBody]} تحت الأفق الآن — السمت الهندسي ${dirName(selectedHor.azimuth)} ${arabicNumber.format(Math.round(selectedHor.azimuth))}°، لذلك لا يظهر داخل السماء.`;
+  } else {
+    banner.hidden = true;
+    banner.textContent = '';
+  }
+
+  requestAnimationFrame(() => {
+    const scroller = $('#skyScroll');
+    const pano = $('#skyPanorama');
+    const target = (((selectedHor.azimuth % 360) + 360) % 360) / 360 * pano.scrollWidth;
+    const max = Math.max(0, pano.scrollWidth - scroller.clientWidth);
+    scroller.scrollTo({left:Math.max(0,Math.min(max,target-scroller.clientWidth/2)),behavior:'smooth'});
+  });
+}
+
 function setTabs() {
   $$('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === activeTab));
   $$('.tab-page').forEach(page => page.classList.remove('active-page'));
@@ -162,10 +241,15 @@ async function render() {
   const date = makeInstant(dateString, Number($('#timeInput').value), loc.offset);
   const vis = visibilityAt(date, observer);
   setCompass(vis.hor);
+  renderSkyScene(date, observer, vis);
 
   $('#currentBodyTitle').textContent = BODY_LABELS[selectedBody];
-  $('#directionNow').textContent = `${dirName(vis.hor.azimuth)} · ${arabicNumber.format(Math.round(vis.hor.azimuth))}°`;
-  $('#altitudeNow').textContent = `ارتفاع ${arabicNumber.format(Math.round(vis.hor.altitude))}° فوق الأفق`;
+  $('#directionNow').textContent = vis.hor.altitude > 0
+    ? `${dirName(vis.hor.azimuth)} · ${arabicNumber.format(Math.round(vis.hor.azimuth))}°`
+    : `تحت الأفق · السمت ${dirName(vis.hor.azimuth)} ${arabicNumber.format(Math.round(vis.hor.azimuth))}°`;
+  $('#altitudeNow').textContent = vis.hor.altitude > 0
+    ? `ارتفاع ${arabicNumber.format(Math.round(vis.hor.altitude))}° فوق الأفق`
+    : `منخفض ${arabicNumber.format(Math.abs(Math.round(vis.hor.altitude)))}° تحت الأفق`;
   $('#visibilityReason').textContent = vis.reason;
   $('#visibilityBadge').textContent = vis.title;
   $('#visibilityBadge').className = `badge ${vis.level}`;
