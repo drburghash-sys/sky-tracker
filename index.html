@@ -62,6 +62,8 @@
       <button class="body-chip" data-body="Mars" type="button"><span>♂</span>المريخ</button>
       <button class="body-chip" data-body="Jupiter" type="button"><span>♃</span>المشتري</button>
       <button class="body-chip" data-body="Saturn" type="button"><span>♄</span>زحل</button>
+      <button class="body-chip" data-body="Uranus" type="button"><span>♅</span>أورانوس</button>
+      <button class="body-chip" data-body="Neptune" type="button"><span>♆</span>نبتون</button>
     </section>
 
     <section id="loadingPanel" class="panel loading">جاري تحميل محرك الحساب الفلكي…</section>
@@ -77,7 +79,7 @@
         <article class="panel horizon-card">
           <div class="section-title-row horizon-head">
             <div>
-              <span class="muted">منظر السماء الآن</span>
+              <span class="muted">الأفق كاملًا ٣٦٠° — من الشمال إلى الشمال في صورة واحدة</span>
               <h2 id="currentBodyTitle">القمر</h2>
             </div>
             <div id="visibilityBadge" class="badge">—</div>
@@ -107,6 +109,7 @@
             </div>
           </div>
 
+          <div id="skyLegend" class="sky-legend" aria-label="الأجرام الموجودة فوق الأفق"></div>
           <div class="sky-scene-footer">
             <div>
               <strong id="directionNow">—</strong>
@@ -165,7 +168,7 @@
 
       <section class="panel note-card">
         <strong>مهم لفهم المنظر</strong>
-        <p>الأجرام التي تكون تحت خط الأفق لا تظهر داخل السماء، ويظهر بدلًا منها تنبيه واضح. موضع كل جرم مرسوم من السمت (0–360°) والارتفاع فوق الأفق، لذلك شرق وغرب في هذا المنظر ليستا تقديرًا بصريًا بل نتيجة الحساب الفلكي لنفس الوقت والموقع.</p>
+        <p>تعرض اللوحة الأفق كاملًا من ٠° إلى ٣٦٠° دون تمرير أفقي. العلامات مواضع محسوبة من السمت والارتفاع، وليست تصويرًا بكاميرا أو محاكاةً لحجم الكواكب الحقيقي. يمكن اختيار جرم من الشريط أسفل الرسم، والأجرام تحت الأفق لا تُرسم.</p>
       </section>
     </div>
 
