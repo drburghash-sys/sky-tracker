@@ -20,6 +20,8 @@ let selectedBody = 'Moon';
 let activeTab = 'today';
 let customLocation = null;
 let renderToken = 0;
+let selectedCatalogId = 'Sirius';
+const CEL = window.CelestialCatalog;
 
 const arabicNumber = new Intl.NumberFormat('ar-SA-u-nu-arab', { maximumFractionDigits: 0 });
 
@@ -220,6 +222,61 @@ function renderSkyScene(date, observer, selectedVis) {
     legend.append(chip);
   }
 
+  const catalogLegend = $('#catalogLegend');
+  catalogLegend.replaceChildren();
+  const loc = currentLocation();
+  const visibleCatalog = [];
+  const named = $('#showNamedStars').checked ? CEL.stars : [];
+  const minors = $('#showMinorBodies').checked ? CEL.asteroids : [];
+  for (const item of named.concat(minors)) {
+    const p = item.kind === 'star'
+      ? CEL.starPosition(item,date,loc.lat,loc.lon)
+      : CEL.asteroidPosition(item,date,loc.lat,loc.lon);
+    if (p.alt <= 0) continue;
+    visibleCatalog.push(p);
+    const marker = document.createElement('button');
+    marker.type = 'button';
+    marker.className = 'catalog-marker ' + p.kind +
+      (p.id===selectedCatalogId ? ' active' : '');
+    marker.style.left = Math.max(2,Math.min(98,(p.az%360+360)%360 / 360 * 100))+'%';
+    marker.style.top = (81-Math.min(90,p.alt)*(72/90))+'%';
+    marker.title = p.name+' — '+dirName(p.az)+' '+Math.round(p.az)+'° · ارتفاع '+Math.round(p.alt)+'°';
+    marker.textContent = p.kind==='asteroid'?'◇':'✦';
+    marker.setAttribute('aria-label',marker.title);
+    const prominent = p.id==='Sirius'||p.id==='Procyon'||p.id==='Polaris'||p.id==='Canopus'||p.id===selectedCatalogId;
+    if (prominent) {
+      const name = document.createElement('span');
+      name.className = 'catalog-marker-name';
+      name.textContent = p.name;
+      marker.append(name);
+    }
+    marker.onclick = () => { selectedCatalogId=p.id; renderSkyScene(date,observer,selectedVis); };
+    wrap.append(marker);
+  }
+  const order = visibleCatalog.slice().sort((x,y)=> x.kind.localeCompare(y.kind) || x.az-y.az);
+  for (const p of order) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sky-legend-chip ' + (p.kind==='asteroid'?'minor-chip':'star-chip')+(p.id===selectedCatalogId?' active':'');
+    btn.textContent = p.name+' · '+arabicNumber.format(Math.round(p.az))+'°';
+    btn.title = dirName(p.az)+' · ارتفاع '+Math.round(p.alt)+'°';
+    btn.onclick = () => {selectedCatalogId=p.id;renderSkyScene(date,observer,selectedVis);};
+    catalogLegend.append(btn);
+  }
+  if (!order.length) catalogLegend.textContent = 'لا توجد نجوم أو كويكبات من المجموعة المعروضة فوق الأفق الآن.';
+  let chosen = order.find(p=>p.id===selectedCatalogId);
+  if (!chosen && selectedCatalogId) {
+    const obj = CEL.stars.concat(CEL.asteroids).find(x=>x.id===selectedCatalogId);
+    if (obj) chosen=obj.kind==='star'?CEL.starPosition(obj,date,loc.lat,loc.lon):CEL.asteroidPosition(obj,date,loc.lat,loc.lon);
+  }
+  $('#catalogDetails').textContent = chosen
+    ? chosen.name+' · '+(chosen.kind==='star'?'نجم':'كويكب (موقع تقريبي)')+
+      ' · '+(chosen.alt>0?'فوق الأفق':'تحت الأفق')+
+      ' · '+dirName(chosen.az)+' '+arabicNumber.format(Math.round(chosen.az))+
+      '° · الارتفاع '+arabicNumber.format(Math.round(chosen.alt))+'°'+
+      (chosen.kind==='asteroid'?' · قد يحتاج منظارًا أو تلسكوبًا':'')
+    : 'اختر نجمًا أو كويكبًا لمعرفة اتجاهه وارتفاعه.';
+
   if (!legend.childElementCount) legend.textContent = 'لا توجد أجرام من المجموعة المحددة فوق الأفق الآن.';
   const banner = $('#belowHorizonBanner');
   const selectedHor = positions[selectedBody] || selectedVis.hor;
@@ -321,7 +378,10 @@ function scheduleRender() {
   scheduleRender.timer = setTimeout(render, 70);
 }
 
-$$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
+for (const id of ['showNamedStars','showMinorBodies']) {
+  $('#'+id).addEventListener('change',()=>scheduleRender());
+}
+$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
   selectedBody = btn.dataset.body;
   $$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
   scheduleRender();
