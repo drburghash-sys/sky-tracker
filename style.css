@@ -68,3 +68,18 @@ button.sky-legend-chip.active{border-color:#6ed7ff;color:#a5ebff;background:rgba
  .sky-legend-chip{font-size:.7rem;padding:5px 7px}
  .below-horizon{max-width:90%;font-size:.67rem}
 }
+
+/* Named bright stars and approximate minor planet overlays */
+.catalog-switches{display:flex;gap:15px;align-items:center;flex-wrap:wrap;color:#dce8ff;font-size:.84rem;margin:10px 0}
+.catalog-switches label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.catalog-switches input{accent-color:#7cbdff}
+.catalog-details{padding:9px 12px;border-radius:13px;background:rgba(24,42,64,.65);font-size:.85rem;color:#e2f4ff;margin-bottom:9px;line-height:1.75}
+.catalog-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.catalog-marker{position:absolute;transform:translate(-50%,-50%);border:0;border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;width:13px;height:13px;min-width:13px;min-height:13px;padding:0;cursor:pointer;font-size:12px;color:#f4f7ff;z-index:7;text-shadow:0 0 7px white}
+.catalog-marker.asteroid{color:#e5bb95;font-size:13px}
+.catalog-marker.active{outline:1px solid #4cd8fa;outline-offset:4px}
+.catalog-marker-name{position:absolute;bottom:17px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(3,10,23,.72);border-radius:6px;padding:2px 4px;font-size:11px;color:#d9ecff;text-shadow:0 0 2px black}
+.catalog-marker.asteroid .catalog-marker-name{color:#f9cda9}
+.minor-chip{border-color:rgba(230,187,135,.3);color:#f1d0ad}
+.star-chip{border-color:rgba(197,214,255,.25)}
+@media(max-width:760px){.catalog-marker-name{display:none}.catalog-marker.active .catalog-marker-name{display:block;font-size:9px}.catalog-legend{max-height:150px;overflow-y:auto}.catalog-details{font-size:.75rem}}
