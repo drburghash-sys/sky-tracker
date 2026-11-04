@@ -109,7 +109,13 @@
             </div>
           </div>
 
-          <div id="skyLegend" class="sky-legend" aria-label="الأجرام الموجودة فوق الأفق"></div>
+          <div class="catalog-switches" aria-label="فئات الأجرام">
+  <label><input type="checkbox" id="showNamedStars" checked> النجوم المسمّاة (٢١)</label>
+  <label><input type="checkbox" id="showMinorBodies" checked> الكويكبات (٥)</label>
+</div>
+<div id="catalogDetails" class="catalog-details" aria-live="polite">اختر نجمًا أو كويكبًا لمعرفة اتجاهه وارتفاعه.</div>
+<div id="skyLegend" class="sky-legend" aria-label="الأجرام الموجودة فوق الأفق"></div>
+<div id="catalogLegend" class="catalog-legend" aria-label="النجوم والكويكبات فوق الأفق"></div>
           <div class="sky-scene-footer">
             <div>
               <strong id="directionNow">—</strong>
@@ -168,13 +174,14 @@
 
       <section class="panel note-card">
         <strong>مهم لفهم المنظر</strong>
-        <p>تعرض اللوحة الأفق كاملًا من ٠° إلى ٣٦٠° دون تمرير أفقي. العلامات مواضع محسوبة من السمت والارتفاع، وليست تصويرًا بكاميرا أو محاكاةً لحجم الكواكب الحقيقي. يمكن اختيار جرم من الشريط أسفل الرسم، والأجرام تحت الأفق لا تُرسم.</p>
+        <p>يعرض المرصد ٣٦٠° في لوحة واحدة. أضفنا ٢١ نجمًا مسمّى، منها الشعرى اليمانية والشامية، وخمسة كويكبات بأرصاد موضعية تقريبية مبنية على عناصر مدارية من عام ٢٠٢٦؛ ليست بيانات لتوجيه تلسكوب بدقة. قد لا يُرى بعض الأجرام بالعين، ولا تعني علاماتها المرسومة إمكانية رصدها دون منظار أو تلسكوب.</p>
       </section>
     </div>
 
     <footer>حسابات فلكية محلية على جهازك · لا حاجة إلى تسجيل دخول</footer>
   </main>
 
+  <script src="celestial-catalog.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>
