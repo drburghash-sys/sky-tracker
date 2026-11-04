@@ -11,9 +11,9 @@ const CITIES = {
 };
 
 const BODY_LABELS = {
-  Moon: 'القمر', Mercury: 'عطارد', Venus: 'الزهرة', Mars: 'المريخ', Jupiter: 'المشتري', Saturn: 'زحل'
+  Sun:'الشمس', Moon: 'القمر', Mercury: 'عطارد', Venus: 'الزهرة', Mars: 'المريخ', Jupiter: 'المشتري', Saturn: 'زحل', Uranus:'أورانوس', Neptune:'نبتون'
 };
-const SCENE_BODIES = ['Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+const SCENE_BODIES = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune'];
 
 let Astro;
 let selectedBody = 'Moon';
@@ -176,7 +176,9 @@ function setSkyTheme(sunAltitude) {
 }
 function renderSkyScene(date, observer, selectedVis) {
   const wrap = $('#skyObjects');
+  const legend = $('#skyLegend');
   wrap.replaceChildren();
+  legend.replaceChildren();
 
   const sunHor = horizon(Astro.Body.Sun, date, observer);
   setSkyTheme(sunHor.altitude);
@@ -187,42 +189,47 @@ function renderSkyScene(date, observer, selectedVis) {
     positions[name] = hor;
     if (hor.altitude <= 0) continue;
 
+    // One fixed 360° projection, always fitting the entire available width.
     const el = document.createElement('div');
     el.className = `sky-object ${skyClass(name)}${name === selectedBody ? ' selected' : ''}`;
-    const x = ((hor.azimuth % 360) + 360) % 360 / 360 * 100;
+    const x = (((hor.azimuth % 360) + 360) % 360) / 360 * 100;
     const y = 81 - Math.min(90, Math.max(0, hor.altitude)) * (72 / 90);
-    el.style.left = `${x}%`;
+    el.style.left = `${Math.max(1.8, Math.min(98.2, x))}%`;
     el.style.top = `${y}%`;
+    el.title = `${BODY_LABELS[name]}: ${dirName(hor.azimuth)} ${Math.round(hor.azimuth)}°، ارتفاع ${Math.round(hor.altitude)}°`;
 
-    const orb = document.createElement('div');
-    orb.className = 'orb';
-    const label = document.createElement('div');
-    label.className = 'obj-name';
-    label.textContent = BODY_LABELS[name];
-    const data = document.createElement('div');
-    data.className = 'obj-data';
+    const orb = document.createElement('div'); orb.className = 'orb';
+    const label = document.createElement('div'); label.className = 'obj-name'; label.textContent = BODY_LABELS[name];
+    const data = document.createElement('div'); data.className = 'obj-data';
     data.textContent = `${dirName(hor.azimuth)} · ${arabicNumber.format(Math.round(hor.azimuth))}° · ارتفاع ${arabicNumber.format(Math.round(hor.altitude))}°`;
     el.append(orb,label,data);
     wrap.append(el);
+
+    const chip = document.createElement(name === 'Sun' ? 'span' : 'button');
+    if (name !== 'Sun') {
+      chip.type = 'button';
+      chip.addEventListener('click', () => {
+        selectedBody = name;
+        $$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
+        scheduleRender();
+      });
+    }
+    chip.className = `sky-legend-chip${name === selectedBody ? ' active' : ''}`;
+    chip.textContent = `${BODY_LABELS[name]} · ${arabicNumber.format(Math.round(hor.azimuth))}° / ${arabicNumber.format(Math.round(hor.altitude))}°`;
+    chip.title = 'السمت / الارتفاع';
+    legend.append(chip);
   }
 
+  if (!legend.childElementCount) legend.textContent = 'لا توجد أجرام من المجموعة المحددة فوق الأفق الآن.';
   const banner = $('#belowHorizonBanner');
   const selectedHor = positions[selectedBody] || selectedVis.hor;
   if (selectedHor.altitude <= 0) {
     banner.hidden = false;
-    banner.textContent = `${BODY_LABELS[selectedBody]} تحت الأفق الآن — السمت الهندسي ${dirName(selectedHor.azimuth)} ${arabicNumber.format(Math.round(selectedHor.azimuth))}°، لذلك لا يظهر داخل السماء.`;
+    banner.textContent = `${BODY_LABELS[selectedBody]} تحت الأفق الآن — ${dirName(selectedHor.azimuth)} ${arabicNumber.format(Math.round(selectedHor.azimuth))}°`;
   } else {
     banner.hidden = true;
     banner.textContent = '';
   }
-
-  requestAnimationFrame(() => {
-    const scroller = $('#skyScroll');
-    const pano = $('#skyPanorama');
-    const target = (((selectedHor.azimuth % 360) + 360) % 360) / 360 * pano.scrollWidth;
-    const max = Math.max(0, pano.scrollWidth - scroller.clientWidth);
-    scroller.scrollTo({left:Math.max(0,Math.min(max,target-scroller.clientWidth/2)),behavior:'smooth'});
-  });
 }
 
 function setTabs() {
