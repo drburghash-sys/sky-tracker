@@ -6,8 +6,8 @@
 .horizon-card{padding:18px;margin-bottom:14px;overflow:hidden}
 .horizon-head{margin-bottom:12px}
 .horizon-head h2{margin:3px 0 0;font-size:1.6rem}
-.sky-scroll{direction:ltr;overflow-x:auto;overscroll-behavior-inline:contain;border-radius:18px;scrollbar-width:thin;scrollbar-color:rgba(110,215,255,.35) transparent;background:#081426}
-.sky-panorama{position:relative;min-width:1180px;height:460px;overflow:hidden;background:linear-gradient(180deg,var(--sky-top,#07142a) 0%,var(--sky-mid,#10284b) 52%,var(--sky-horizon,#534465) 79%,#111827 82%,#05080d 100%);isolation:isolate}
+.sky-scroll{direction:ltr;overflow-x:hidden;overscroll-behavior-inline:contain;border-radius:18px;scrollbar-width:thin;scrollbar-color:rgba(110,215,255,.35) transparent;background:#081426}
+.sky-panorama{position:relative;min-width:0;height:460px;overflow:hidden;background:linear-gradient(180deg,var(--sky-top,#07142a) 0%,var(--sky-mid,#10284b) 52%,var(--sky-horizon,#534465) 79%,#111827 82%,#05080d 100%);isolation:isolate}
 .sky-starfield{position:absolute;inset:0 0 18%;opacity:var(--stars-opacity,.9);background-image:radial-gradient(circle at 6% 13%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 13% 31%,#d7eaff 0 1.2px,transparent 1.8px),radial-gradient(circle at 19% 8%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 26% 42%,#fff 0 .8px,transparent 1.5px),radial-gradient(circle at 35% 22%,#d8e7ff 0 1.2px,transparent 1.8px),radial-gradient(circle at 43% 10%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 50% 35%,#fff 0 1.1px,transparent 1.7px),radial-gradient(circle at 58% 16%,#dbe7ff 0 1px,transparent 1.5px),radial-gradient(circle at 64% 44%,#fff 0 .9px,transparent 1.5px),radial-gradient(circle at 72% 24%,#fff 0 1.2px,transparent 1.7px),radial-gradient(circle at 80% 9%,#d9e8ff 0 1px,transparent 1.5px),radial-gradient(circle at 87% 37%,#fff 0 1px,transparent 1.6px),radial-gradient(circle at 94% 18%,#fff 0 1.2px,transparent 1.8px)}
 .alt-guide{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.13);z-index:1}
 .alt-guide span{position:absolute;left:12px;top:-18px;font-size:.72rem;color:rgba(220,232,248,.52)}
@@ -42,4 +42,29 @@
 .compass-card{padding:16px}.compact-head strong{display:block;margin-top:3px}
 .compass{width:min(290px,78vw)}
 .compass>span{font-size:.67rem}
-@media(max-width:760px){.horizon-card{padding:12px}.sky-panorama{min-width:980px;height:390px}.sky-scene-footer{align-items:flex-start;flex-direction:column}.lower-grid{grid-template-columns:1fr}.sky-object .obj-name{font-size:.8rem}.sky-object .obj-data{font-size:.62rem}}
+@media(max-width:760px){.horizon-card{padding:12px}.sky-panorama{min-width:0;height:300px}.sky-scene-footer{align-items:flex-start;flex-direction:column}.lower-grid{grid-template-columns:1fr}.sky-object .obj-name{font-size:.8rem}.sky-object .obj-data{font-size:.62rem}}
+
+/* Full-horizon 360° single-panel mode (no horizontal panning). */
+.sky-scroll{overflow:hidden;touch-action:pan-y}
+.sky-panorama{min-width:0;width:100%;height:clamp(300px,43vw,460px)}
+.sky-objects{overflow:hidden}
+.sky-object{min-width:0;max-width:120px;gap:3px;z-index:5}
+.sky-object .obj-name{font-size:clamp(.62rem,1.25vw,.85rem)}
+.sky-object .obj-data{display:none}
+.sky-object.selected .obj-data{display:block;font-size:.64rem}
+.sky-legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;direction:rtl}
+.sky-legend-chip{border:1px solid rgba(170,192,225,.25);background:rgba(11,27,47,.6);border-radius:999px;padding:6px 9px;color:#dbe9ff;font-size:.76rem;font-family:inherit;white-space:nowrap}
+button.sky-legend-chip{cursor:pointer}
+button.sky-legend-chip.active{border-color:#6ed7ff;color:#a5ebff;background:rgba(110,215,255,.13)}
+@media(max-width:760px){
+ .sky-panorama{min-width:0;width:100%;height:300px}
+ .sky-object .obj-name{font-size:.62rem}
+ .sky-object .orb{transform:scale(.78)}
+ .sky-object.selected .obj-data{display:none}
+ .dir-mark{font-size:.57rem}
+ .dir-mark b{font-size:.63rem}
+ .d45 b,.d135 b,.d225 b,.d315 b,.d45 span,.d135 span,.d225 span,.d315 span{display:none}
+ .d360{display:none}
+ .sky-legend-chip{font-size:.7rem;padding:5px 7px}
+ .below-horizon{max-width:90%;font-size:.67rem}
+}
