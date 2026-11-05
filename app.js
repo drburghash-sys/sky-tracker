@@ -418,13 +418,17 @@ $('#timeInput').value = Math.round((nowSaudi.getUTCHours()+nowSaudi.getUTCMinute
 updateLocationHeader(); updateTimeLabel(); setTabs();
 
 try {
-  Astro = await import('https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm');
+  // Astronomy Engine is bundled with this site; no external CDN request required.
+  Astro = window.Astronomy;
+  if (!Astro || typeof Astro.Equator !== 'function' || typeof Astro.SearchRiseSet !== 'function') {
+    throw new Error('تعذر تهيئة المحرك الفلكي المحلي');
+  }
   $('#loadingPanel').hidden = true;
   $('#appContent').hidden = false;
   await render();
 } catch (err) {
   console.error(err);
-  $('#loadingPanel').textContent = 'تعذر تحميل محرك الحساب الفلكي. تحقق من اتصال الإنترنت ثم أعد فتح الصفحة.';
+  $('#loadingPanel').textContent = 'تعذر تشغيل المرصد. أعد تحميل الصفحة بعد التحديث. التفاصيل: ' + (err?.message || 'خطأ غير معروف');
 }
 
 
