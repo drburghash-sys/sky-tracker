@@ -23,6 +23,14 @@ let renderToken = 0;
 let selectedCatalogId = 'Sirius';
 const CEL = window.CelestialCatalog;
 
+function showFatalError(err) {
+  console.error('Sky Tracker startup/render failure', err);
+  window.__skyBoot = false;
+  $('#loadingPanel').hidden = false;
+  $('#appContent').hidden = true;
+  $('#loadingPanel').textContent = 'تعذر تشغيل المرصد. التفاصيل: ' + (err?.message || 'خطأ غير معروف');
+}
+
 const arabicNumber = new Intl.NumberFormat('ar-SA-u-nu-arab', { maximumFractionDigits: 0 });
 
 function pad2(n) { return String(n).padStart(2, '0'); }
@@ -212,7 +220,7 @@ function renderSkyScene(date, observer, selectedVis) {
       chip.type = 'button';
       chip.addEventListener('click', () => {
         selectedBody = name;
-        $$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
+        $$$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
         scheduleRender();
       });
     }
@@ -375,15 +383,15 @@ async function render() {
 
 function scheduleRender() {
   clearTimeout(scheduleRender.timer);
-  scheduleRender.timer = setTimeout(render, 70);
+  scheduleRender.timer = setTimeout(() => { render().catch(showFatalError); }, 70);
 }
 
 for (const id of ['showNamedStars','showMinorBodies']) {
   $('#'+id).addEventListener('change',()=>scheduleRender());
 }
-$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
+$$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
   selectedBody = btn.dataset.body;
-  $$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
+  $$$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
   scheduleRender();
 }));
 $$('.tab').forEach(btn => btn.addEventListener('click', () => {
@@ -420,15 +428,15 @@ updateLocationHeader(); updateTimeLabel(); setTabs();
 try {
   // Astronomy Engine is bundled with this site; no external CDN request required.
   Astro = window.Astronomy;
-  if (!Astro || typeof Astro.Equator !== 'function' || typeof Astro.SearchRiseSet !== 'function') {
+  if (!Astro || typeof Astro.Equator !== 'function' || typeof Astro.SearchRiseSet !== 'function' || !CEL || !Array.isArray(CEL.stars)) {
     throw new Error('تعذر تهيئة المحرك الفلكي المحلي');
   }
   $('#loadingPanel').hidden = true;
   $('#appContent').hidden = false;
+  window.__skyBoot = true;
   await render();
 } catch (err) {
-  console.error(err);
-  $('#loadingPanel').textContent = 'تعذر تشغيل المرصد. أعد تحميل الصفحة بعد التحديث. التفاصيل: ' + (err?.message || 'خطأ غير معروف');
+  showFatalError(err);
 }
 
 
