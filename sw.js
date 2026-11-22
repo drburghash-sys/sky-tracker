@@ -1,4 +1,4 @@
-const CACHE = 'sky-tracker-v7-fixed-boot';
+const CACHE = 'sky-tracker-v8-planet-selection';
 const ASSETS = ['./','./index.html','./style.css','./app.js','./celestial-catalog.js','./astronomy.browser.min.js','./manifest.webmanifest','./icon.svg','./standalone.html'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
