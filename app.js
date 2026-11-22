@@ -220,7 +220,7 @@ function renderSkyScene(date, observer, selectedVis) {
       chip.type = 'button';
       chip.addEventListener('click', () => {
         selectedBody = name;
-        $$$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
+        $$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
         scheduleRender();
       });
     }
@@ -391,7 +391,7 @@ for (const id of ['showNamedStars','showMinorBodies']) {
 }
 $$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
   selectedBody = btn.dataset.body;
-  $$$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
+  $$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
   scheduleRender();
 }));
 $$('.tab').forEach(btn => btn.addEventListener('click', () => {
