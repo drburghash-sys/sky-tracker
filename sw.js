@@ -1,5 +1,5 @@
-const CACHE = 'sky-tracker-v6-mobile-offline';
-const ASSETS = ['./','./index.html','./style.css','./app.js','./celestial-catalog.js','./astronomy.browser.min.js','./manifest.webmanifest','./icon.svg'];
+const CACHE = 'sky-tracker-v7-fixed-boot';
+const ASSETS = ['./','./index.html','./style.css','./app.js','./celestial-catalog.js','./astronomy.browser.min.js','./manifest.webmanifest','./icon.svg','./standalone.html'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
   self.skipWaiting();
