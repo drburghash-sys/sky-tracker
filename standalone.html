@@ -639,7 +639,7 @@ return new kd(this.curr.time,a,b)};$jscomp.global.Object.defineProperties(H.prot
   <script type="module">
 try {
 const $ = (s) => document.querySelector(s);
-const $ = (s) => [...document.querySelectorAll(s)];
+const $$ = (s) => [...document.querySelectorAll(s)];
 
 const CITIES = {
   tabuk:   { name: 'تبوك', lat: 28.3838, lon: 36.5662, offset: 180 },
@@ -852,7 +852,7 @@ function renderSkyScene(date, observer, selectedVis) {
       chip.type = 'button';
       chip.addEventListener('click', () => {
         selectedBody = name;
-        $('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
+        $$('.body-chip').forEach(b => b.classList.toggle('active',b.dataset.body === name));
         scheduleRender();
       });
     }
@@ -930,8 +930,8 @@ function renderSkyScene(date, observer, selectedVis) {
 }
 
 function setTabs() {
-  $('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === activeTab));
-  $('.tab-page').forEach(page => page.classList.remove('active-page'));
+  $$('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === activeTab));
+  $$('.tab-page').forEach(page => page.classList.remove('active-page'));
   $(`#${activeTab}Tab`).classList.add('active-page');
 }
 
@@ -1021,12 +1021,12 @@ function scheduleRender() {
 for (const id of ['showNamedStars','showMinorBodies']) {
   $('#'+id).addEventListener('change',()=>scheduleRender());
 }
-$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
+$$('.body-chip').forEach(btn => btn.addEventListener('click', () => {
   selectedBody = btn.dataset.body;
-  $('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
+  $$('.body-chip').forEach(x => x.classList.toggle('active', x === btn));
   scheduleRender();
 }));
-$('.tab').forEach(btn => btn.addEventListener('click', () => {
+$$('.tab').forEach(btn => btn.addEventListener('click', () => {
   activeTab = btn.dataset.tab;
   setTabs();
 }));
